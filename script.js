@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebas
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
 const firebaseConfig = {
-   apiKey: "AIzaSyCoo-WBUFesOZkRHEXDdhS0Y0YeE250S4Y",
+    apiKey: "AIzaSyCoo-WBUFesOZkRHEXDdhS0Y0YeE250S4Y",
   authDomain: "projeto-estoque-672d2.firebaseapp.com",
   projectId: "projeto-estoque-672d2",
   storageBucket: "projeto-estoque-672d2.firebasestorage.app",
