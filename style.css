@@ -25,3 +25,25 @@
 
 .btn-entrada { background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
 .btn-saida { background: #ffc107; color: black; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+
+/* Botão Excluir */
+.btn-excluir {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.btn-excluir:hover { background-color: #cc0000; }
+
+.log-item {
+    border-bottom: 1px solid #eee;
+    padding: 5px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.data-log { color: #888; font-style: italic; }
