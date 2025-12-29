@@ -3,27 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Estoque - Eletrônicos</title>
+    <title>Estoque Pro - Eletrônicos</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
-        <h2>📦 Gestão de Estoque</h2>
+        <h2>📦 Gestão de Estoque Profissional</h2>
         
-        <div class="form-group">
+        <div class="card">
+            <h3>Novo Equipamento</h3>
             <input type="text" id="nome" placeholder="Nome do Equipamento">
-            <input type="number" id="quantidade" placeholder="Quantidade">
-            <select id="status">
-                <option value="estoque">Em Estoque</option>
-                <option value="vendido">Vendido</option>
-            </select>
-            <button id="btnSalvar">Adicionar ao Firebase</button>
+            <input type="number" id="quantidade" placeholder="Quantidade Inicial">
+            <input type="number" id="minimo" placeholder="Alerta de estoque baixo (ex: 5)">
+            <button id="btnSalvar">Cadastrar Item</button>
         </div>
 
         <hr>
 
-        <h3>Itens Cadastrados</h3>
+        <div class="card">
+            <input type="text" id="inputBusca" placeholder="🔍 Buscar por nome...">
+        </div>
+
         <div id="listaEquipamentos">
             </div>
     </div>
