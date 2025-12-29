@@ -1,49 +1,115 @@
-/* ... manter o anterior e adicionar/ajustar estes ... */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
-.card { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+const firebaseConfig = {  
+  apiKey: "AIzaSyCoo-WBUFesOZkRHEXDdhS0Y0YeE250S4Y",
+  authDomain: "projeto-estoque-672d2.firebaseapp.com",
+  projectId: "projeto-estoque-672d2",
+  storageBucket: "projeto-estoque-672d2.firebasestorage.app",
+  messagingSenderId: "888916286160",
+  appId: "1:888916286160:web:1d58e77922eb9efff1dcd5",
+  measurementId: "G-KGC9L57HZT" 
+};
 
-.item-card {
-    background: white;
-    padding: 15px;
-    border: 1px solid #ddd;
-    margin-top: 10px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// --- FUNÇÃO PARA SALVAR LOG DE MOVIMENTAÇÃO ---
+async function registrarLog(produto, tipo, quantidade) {
+    const agora = new Date();
+    await addDoc(collection(db, "historico"), {
+        produto: produto,
+        tipo: tipo, // "Entrada", "Venda" ou "Cadastro"
+        quantidade: quantidade,
+        dataHora: agora.toLocaleString('pt-BR')
+    });
 }
 
-/* Alerta de Estoque Baixo */
-.estoque-baixo {
-    border: 2px solid #dc3545 !important;
-    background-color: #fff5f5;
+// --- CADASTRAR NOVO ITEM ---
+document.getElementById('btnSalvar').addEventListener('click', async () => {
+    const nome = document.getElementById('nome').value;
+    const qtd = Number(document.getElementById('quantidade').value);
+    const min = Number(document.getElementById('minimo').value);
+
+    if (!nome) return alert("Nome é obrigatório!");
+
+    const docRef = await addDoc(collection(db, "equipamentos"), {
+        nome: nome.toLowerCase(),
+        quantidade: qtd,
+        minimo: min,
+        dataCadastro: new Date().toLocaleString('pt-BR')
+    });
+
+    await registrarLog(nome, "Cadastro Inicial", qtd);
+    alert("Cadastrado com sucesso!");
+});
+
+// --- ALTERAR QUANTIDADE (ENTRADA/VENDA) COM DATA E HORA ---
+window.alterarQtd = async (id, nome, mudanca) => {
+    const itemRef = doc(db, "equipamentos", id);
+    const querySnapshot = await getDocs(collection(db, "equipamentos"));
+    
+    querySnapshot.forEach(async (d) => {
+        if(d.id === id) {
+            const novaQtd = d.data().quantidade + mudanca;
+            if(novaQtd < 0) return alert("Estoque insuficiente!");
+
+            await updateDoc(itemRef, { quantidade: novaQtd });
+            
+            // Registra se foi entrada ou venda
+            const tipoAcao = mudanca > 0 ? "Entrada" : "Venda";
+            await registrarLog(nome, tipoAcao, Math.abs(mudanca));
+        }
+    });
+};
+
+// --- EXCLUIR ITEM ---
+window.excluirItem = async (id, nome) => {
+    if (confirm(`Tem certeza que deseja remover o item "${nome.toUpperCase()}"?`)) {
+        await deleteDoc(doc(db, "equipamentos", id));
+        await registrarLog(nome, "Exclusão de Registro", 0);
+    }
+};
+
+// --- RENDERIZAR LISTA E HISTÓRICO ---
+function carregarDados() {
+    // Escutar Equipamentos
+    onSnapshot(collection(db, "equipamentos"), (snapshot) => {
+        const listaDiv = document.getElementById('listaEquipamentos');
+        listaDiv.innerHTML = "";
+        snapshot.forEach((d) => {
+            const item = d.data();
+            const isBaixo = item.quantidade <= item.minimo;
+            listaDiv.innerHTML += `
+                <div class="item-card ${isBaixo ? 'estoque-baixo' : ''}">
+                    <div>
+                        <strong>${item.nome.toUpperCase()}</strong><br>
+                        <small>Cadastrado em: ${item.dataCadastro}</small><br>
+                        <span>Qtd: ${item.quantidade} (Mín: ${item.minimo})</span>
+                    </div>
+                    <div class="acoes">
+                        <button class="btn-entrada" onclick="alterarQtd('${d.id}', '${item.nome}', 1)">+</button>
+                        <button class="btn-saida" onclick="alterarQtd('${d.id}', '${item.nome}', -1)">-</button>
+                        <button class="btn-excluir" onclick="excluirItem('${d.id}', '${item.nome}')">🗑️</button>
+                    </div>
+                </div>`;
+        });
+    });
+
+    // Escutar Histórico (últimos 10 movimentos)
+    const q = query(collection(db, "historico"), orderBy("dataHora", "desc"), limit(10));
+    onSnapshot(collection(db, "historico"), (snapshot) => {
+        const logDiv = document.getElementById('historicoLogs');
+        logDiv.innerHTML = "";
+        snapshot.forEach((d) => {
+            const log = d.data();
+            logDiv.innerHTML += `
+                <div class="log-item">
+                    <span><strong>${log.tipo}:</strong> ${log.produto} (${log.quantidade} un)</span>
+                    <span class="data-log">${log.dataHora}</span>
+                </div>`;
+        });
+    });
 }
 
-.estoque-baixo strong { color: #dc3545; }
-
-.acoes { display: flex; gap: 5px; }
-
-.btn-entrada { background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
-.btn-saida { background: #ffc107; color: black; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
-
-/* Botão Excluir */
-.btn-excluir {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 5px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-.btn-excluir:hover { background-color: #cc0000; }
-
-.log-item {
-    border-bottom: 1px solid #eee;
-    padding: 5px 0;
-    display: flex;
-    justify-content: space-between;
-}
-
-.data-log { color: #888; font-style: italic; }
+carregarDados();
