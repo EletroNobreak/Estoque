@@ -2,7 +2,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebas
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
 const firebaseConfig = {
-    // ... MANTENHA SUAS CONFIGURAÇÕES AQUI ...
+   apiKey: "AIzaSyCoo-WBUFesOZkRHEXDdhS0Y0YeE250S4Y",
+  authDomain: "projeto-estoque-672d2.firebaseapp.com",
+  projectId: "projeto-estoque-672d2",
+  storageBucket: "projeto-estoque-672d2.firebasestorage.app",
+  messagingSenderId: "888916286160",
+  appId: "1:888916286160:web:1d58e77922eb9efff1dcd5",
+  measurementId: "G-KGC9L57HZT"
 };
 
 const app = initializeApp(firebaseConfig);
