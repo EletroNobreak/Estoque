@@ -1,48 +1,27 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #e9ecef;
-    display: flex;
-    justify-content: center;
-    padding: 40px;
-}
+/* ... manter o anterior e adicionar/ajustar estes ... */
 
-.container {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 450px;
-}
-
-h2 { color: #333; text-align: center; }
-
-input, select, button {
-    width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-sizing: border-box; /* Garante que o padding não quebre a largura */
-}
-
-button {
-    background-color: #28a745;
-    color: white;
-    font-weight: bold;
-    border: none;
-    transition: 0.3s;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #218838;
-}
+.card { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
 
 .item-card {
-    background: #f8f9fa;
-    padding: 10px;
-    border-left: 5px solid #007bff;
+    background: white;
+    padding: 15px;
+    border: 1px solid #ddd;
     margin-top: 10px;
-    border-radius: 4px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+
+/* Alerta de Estoque Baixo */
+.estoque-baixo {
+    border: 2px solid #dc3545 !important;
+    background-color: #fff5f5;
+}
+
+.estoque-baixo strong { color: #dc3545; }
+
+.acoes { display: flex; gap: 5px; }
+
+.btn-entrada { background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+.btn-saida { background: #ffc107; color: black; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
